@@ -15,8 +15,8 @@ const Home = () => {
   const [symbols, setSymbols] = useState<string[]>([]);
   const [selectedSymbol, setSelectedSymbol] = useState<string>("BTCUSDT");
 
+  // 獲取幣種列表
   useEffect(() => {
-    // Fetch available symbols from Binance API
     const fetchSymbols = async () => {
       try {
         const response = await fetch("https://api.binance.com/api/v3/exchangeInfo");
@@ -25,7 +25,7 @@ const Home = () => {
           .filter((symbol: BinanceSymbol) => symbol.status === "TRADING" && symbol.quoteAsset === "USDT")
           .map((symbol: BinanceSymbol) => symbol.symbol);
         setSymbols(filteredSymbols);
-      } catch (_) {
+      } catch {
         setError("無法獲取幣種列表，請稍後再試。");
       }
     };
@@ -33,6 +33,7 @@ const Home = () => {
     fetchSymbols();
   }, []);
 
+  // WebSocket 即時價格更新
   useEffect(() => {
     if (!selectedSymbol) return;
 
@@ -44,7 +45,7 @@ const Home = () => {
         const currentPrice = parseFloat(data.p); // 'p' 是價格的屬性
         setPreviousPrice(price); // 將當前價格存為上一價格
         setPrice(currentPrice); // 更新最新價格
-      } catch (_) {
+      } catch {
         setError("數據解析失敗");
       }
     };
@@ -53,12 +54,15 @@ const Home = () => {
       setError("WebSocket 連線錯誤，請稍後再試。");
     };
 
+    // 清理 WebSocket 連線
     return () => {
-      ws.close();
+      if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+        ws.close();
+      }
     };
   }, [selectedSymbol, price]);
 
-  // 判斷價格漲跌顏色與箭頭
+  // 判斷價格漲跌顏色
   const getPriceClass = () => {
     if (price !== null && previousPrice !== null) {
       return price > previousPrice ? "text-green-500" : "text-red-500";
@@ -66,6 +70,7 @@ const Home = () => {
     return "";
   };
 
+  // 判斷箭頭方向
   const getArrow = () => {
     if (price !== null && previousPrice !== null) {
       return price > previousPrice ? "↑" : "↓";
@@ -91,7 +96,7 @@ const Home = () => {
               id="symbol-select"
               value={selectedSymbol}
               onChange={(e) => setSelectedSymbol(e.target.value)}
-              className="w-full p-2 border rounded border-cyan-500 text-gray-400"
+              className="w-full p-2 border rounded border-cyan-500 text-gray-700"
             >
               {symbols.map((symbol) => (
                 <option key={symbol} value={symbol}>
@@ -111,11 +116,11 @@ const Home = () => {
           )}
           <hr className="my-4 border-gray-300" />
           <p className="text-gray-400 mt-6">組員：</p>
-          <p className="text-gray-400">S1411132012 碼名字 技術提供</p>
-          <p className="text-gray-400">S1411132022 碼名字 報告製作</p>
-          <p className="text-gray-400">S14111320 碼名字 報告製作</p>
-          <p className="text-gray-400">S14111320 碼名字 上台演講</p>
-          <p className="text-gray-400">S14111320 碼名字 上台演講</p>
+          <p className="text-gray-400">S1411132012 徐偉宸 技術提供</p>
+          <p className="text-gray-400">S1411132022 許博峻 報告製作</p>
+          <p className="text-gray-400">S14111320 群組成員A 報告製作</p>
+          <p className="text-gray-400">S14111320 群組成員B 上台演講</p>
+          <p className="text-gray-400">S14111320 群組成員C 上台演講</p>
         </div>
       </div>
     </>
