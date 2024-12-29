@@ -1,6 +1,13 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 
+// 定義 Binance API 符號類型
+interface BinanceSymbol {
+  symbol: string;
+  status: string;
+  quoteAsset: string;
+}
+
 const Home = () => {
   const [price, setPrice] = useState<number | null>(null);
   const [previousPrice, setPreviousPrice] = useState<number | null>(null);
@@ -15,10 +22,10 @@ const Home = () => {
         const response = await fetch("https://api.binance.com/api/v3/exchangeInfo");
         const data = await response.json();
         const filteredSymbols = data.symbols
-          .filter((symbol: any) => symbol.status === "TRADING" && symbol.quoteAsset === "USDT")
-          .map((symbol: any) => symbol.symbol);
+          .filter((symbol: BinanceSymbol) => symbol.status === "TRADING" && symbol.quoteAsset === "USDT")
+          .map((symbol: BinanceSymbol) => symbol.symbol);
         setSymbols(filteredSymbols);
-      } catch (e) {
+      } catch (_) {
         setError("無法獲取幣種列表，請稍後再試。");
       }
     };
@@ -37,7 +44,7 @@ const Home = () => {
         const currentPrice = parseFloat(data.p); // 'p' 是價格的屬性
         setPreviousPrice(price); // 將當前價格存為上一價格
         setPrice(currentPrice); // 更新最新價格
-      } catch (e) {
+      } catch (_) {
         setError("數據解析失敗");
       }
     };
