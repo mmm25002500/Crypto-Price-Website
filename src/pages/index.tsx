@@ -116,11 +116,11 @@ const Home = () => {
           )}
           <hr className="my-4 border-gray-300" />
           <p className="text-gray-400 mt-6">組員：</p>
-          <p className="text-gray-400">S1411132012 徐偉宸 技術提供</p>
-          <p className="text-gray-400">S1411132022 許博峻 報告製作</p>
-          <p className="text-gray-400">S14111320 群組成員A 報告製作</p>
-          <p className="text-gray-400">S14111320 群組成員B 上台演講</p>
-          <p className="text-gray-400">S14111320 群組成員C 上台演講</p>
+          <p className="text-gray-400">12 技術提供</p>
+          <p className="text-gray-400">22 報告製作</p>
+          <p className="text-gray-400">39 報告製作</p>
+          <p className="text-gray-400">27 上台演講</p>
+          <p className="text-gray-400">18 上台演講</p>
         </div>
       </div>
     </>
